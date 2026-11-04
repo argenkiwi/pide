@@ -1,6 +1,8 @@
 use std::future::Future;
 
 pub mod nodes;
+pub mod utils;
+pub mod walks;
 
 /// A processing step in a walk.
 ///
