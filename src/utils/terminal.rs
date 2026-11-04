@@ -18,8 +18,3 @@ pub fn prompt(message: &str) -> io::Result<Option<String>> {
         _ => Some(input.trim_end_matches(['\r', '\n']).to_string()),
     })
 }
-
-/// Prints `message` followed by a newline to stdout.
-pub fn print_line(message: &str) {
-    println!("{message}");
-}
