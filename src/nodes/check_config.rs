@@ -163,11 +163,11 @@ mod tests {
         let utils = MockUtils {
             files: HashMap::from([
                 (
-                    PathBuf::from("/p/.pico/pi/models.json"),
+                    PathBuf::from("/p/.pide/pi/models.json"),
                     pi_config::render_models("http://host.docker.internal:11434", "qwen3:8b"),
                 ),
                 (
-                    PathBuf::from("/p/.pico/pi/settings.json"),
+                    PathBuf::from("/p/.pide/pi/settings.json"),
                     pi_config::render_settings("qwen3:8b"),
                 ),
             ]),
@@ -206,9 +206,9 @@ mod tests {
     async fn needs_setup_when_the_files_are_incomplete() {
         let utils = MockUtils {
             files: HashMap::from([
-                (PathBuf::from("/p/.pico/pi/models.json"), "{}".to_string()),
+                (PathBuf::from("/p/.pide/pi/models.json"), "{}".to_string()),
                 (
-                    PathBuf::from("/p/.pico/pi/settings.json"),
+                    PathBuf::from("/p/.pide/pi/settings.json"),
                     pi_config::render_settings("qwen3:8b"),
                 ),
             ]),

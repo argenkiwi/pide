@@ -1,63 +1,63 @@
-//! Where pico keeps its files inside a target project, and how it names images.
+//! Where pide keeps its files inside a target project, and how it names images.
 
 use sha2::{Digest, Sha256};
 use std::fmt::Write;
 use std::path::{Path, PathBuf};
 
-/// Folder, inside the target project, that holds everything pico creates.
-pub const PICO_DIR: &str = ".pico";
-/// Prefix of every image pico builds.
-pub const IMAGE_PREFIX: &str = "pico";
+/// Folder, inside the target project, that holds everything pide creates.
+pub const PIDE_DIR: &str = ".pide";
+/// Prefix of every image pide builds.
+pub const IMAGE_PREFIX: &str = "pide";
 /// Image label holding the hash of the Containerfile the image was built from.
-pub const HASH_LABEL: &str = "pico.containerfile-hash";
+pub const HASH_LABEL: &str = "pide.containerfile-hash";
 /// Where the target project is mounted inside the container.
 pub const WORKSPACE: &str = "/workspace";
 /// Pi's agent configuration folder inside the container.
 pub const PI_AGENT_DIR: &str = "/root/.pi/agent";
 
-/// `<target>/.pico`.
+/// `<target>/.pide`.
 #[must_use]
-pub fn pico_dir(target: &Path) -> PathBuf {
-    target.join(PICO_DIR)
+pub fn pide_dir(target: &Path) -> PathBuf {
+    target.join(PIDE_DIR)
 }
 
-/// `<target>/.pico/Containerfile`.
+/// `<target>/.pide/Containerfile`.
 #[must_use]
 pub fn containerfile(target: &Path) -> PathBuf {
-    pico_dir(target).join("Containerfile")
+    pide_dir(target).join("Containerfile")
 }
 
-/// `<target>/.pico/.gitignore`.
+/// `<target>/.pide/.gitignore`.
 #[must_use]
 pub fn gitignore(target: &Path) -> PathBuf {
-    pico_dir(target).join(".gitignore")
+    pide_dir(target).join(".gitignore")
 }
 
-/// `<target>/.pico/pi`, mounted as Pi's agent configuration folder.
+/// `<target>/.pide/pi`, mounted as Pi's agent configuration folder.
 #[must_use]
 pub fn pi_dir(target: &Path) -> PathBuf {
-    pico_dir(target).join("pi")
+    pide_dir(target).join("pi")
 }
 
-/// `<target>/.pico/pi/models.json`.
+/// `<target>/.pide/pi/models.json`.
 #[must_use]
 pub fn models_json(target: &Path) -> PathBuf {
     pi_dir(target).join("models.json")
 }
 
-/// `<target>/.pico/pi/settings.json`.
+/// `<target>/.pide/pi/settings.json`.
 #[must_use]
 pub fn settings_json(target: &Path) -> PathBuf {
     pi_dir(target).join("settings.json")
 }
 
-/// `<target>/.pico/pi/prompts/containerfile.md`, the `/containerfile` slash command.
+/// `<target>/.pide/pi/prompts/containerfile.md`, the `/containerfile` slash command.
 #[must_use]
 pub fn containerfile_prompt(target: &Path) -> PathBuf {
     pi_dir(target).join("prompts").join("containerfile.md")
 }
 
-/// Names the image for `target`: `pico-<folder>-<path hash>`.
+/// Names the image for `target`: `pide-<folder>-<path hash>`.
 ///
 /// The folder name is lowercased and reduced to `[a-z0-9-]`; the hash of the full path keeps
 /// projects with the same folder name apart.
@@ -99,8 +99,8 @@ mod tests {
     fn image_name_uses_a_clean_folder_name_and_a_path_hash() {
         let name = image_name(Path::new("/home/me/My Project_2"));
 
-        assert!(name.starts_with("pico-my-project-2-"), "{name}");
-        assert_eq!(name.len(), "pico-my-project-2-".len() + 8);
+        assert!(name.starts_with("pide-my-project-2-"), "{name}");
+        assert_eq!(name.len(), "pide-my-project-2-".len() + 8);
     }
 
     #[test]
@@ -116,7 +116,7 @@ mod tests {
         let name = image_name(Path::new("/"));
 
         assert!(
-            name.starts_with("pico-") && name.len() == "pico-".len() + 8,
+            name.starts_with("pide-") && name.len() == "pide-".len() + 8,
             "{name}"
         );
     }

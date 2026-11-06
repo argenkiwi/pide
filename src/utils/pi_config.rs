@@ -2,7 +2,7 @@
 
 use serde_json::{Value, json};
 
-/// Name of the single provider pico configures.
+/// Name of the single provider pide configures.
 pub const PROVIDER: &str = "local";
 /// Path the OpenAI-compatible API lives under on the server.
 pub const API_PATH: &str = "/v1";

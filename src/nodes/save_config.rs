@@ -192,18 +192,18 @@ mod tests {
             *utils.written.lock().unwrap(),
             [
                 (
-                    PathBuf::from("/p/.pico/pi/models.json"),
+                    PathBuf::from("/p/.pide/pi/models.json"),
                     pi_config::render_models("http://host.docker.internal:11434", "qwen3:8b")
                 ),
                 (
-                    PathBuf::from("/p/.pico/pi/settings.json"),
+                    PathBuf::from("/p/.pide/pi/settings.json"),
                     pi_config::render_settings("qwen3:8b")
                 ),
             ]
         );
         assert_eq!(
             *utils.printed.lock().unwrap(),
-            ["Saved Pi's configuration to /p/.pico/pi."]
+            ["Saved Pi's configuration to /p/.pide/pi."]
         );
     }
 
@@ -217,7 +217,7 @@ mod tests {
         let result = SaveConfig::with_utils(&utils).run(&mut state()).await;
 
         assert!(
-            matches!(result, Err(Error::Write { path, .. }) if path == Path::new("/p/.pico/pi/models.json"))
+            matches!(result, Err(Error::Write { path, .. }) if path == Path::new("/p/.pide/pi/models.json"))
         );
     }
 }

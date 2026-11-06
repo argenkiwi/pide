@@ -6,7 +6,7 @@ use std::path::Path;
 use std::process::Stdio;
 use tokio::process::Command;
 
-/// Engines pico can drive, in order of preference.
+/// Engines pide can drive, in order of preference.
 pub const ENGINES: &[&str] = &["podman", "docker"];
 
 /// Returns `true` if an executable named `name` is on `PATH`.

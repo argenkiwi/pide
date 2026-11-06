@@ -149,7 +149,7 @@ where
         }
 
         self.utils.print(&format!("Building image {image}..."));
-        let context = layout::pico_dir(state.target());
+        let context = layout::pide_dir(state.target());
         let built = self
             .utils
             .build(&engine, &image, &containerfile, &context, &hash)
@@ -159,7 +159,7 @@ where
             return Ok(Outcome::Ready);
         }
         *state.error_mut() = Some(format!(
-            "Building the image from {} failed. Fix the Containerfile and run pico again.",
+            "Building the image from {} failed. Fix the Containerfile and run pide again.",
             containerfile.display()
         ));
         Ok(Outcome::Failed)
@@ -310,7 +310,7 @@ mod tests {
         assert_eq!(
             *utils.built.lock().unwrap(),
             [format!(
-                "podman {image} /p/app/.pico/Containerfile /p/app/.pico {}",
+                "podman {image} /p/app/.pide/Containerfile /p/app/.pide {}",
                 layout::content_hash(CONTAINERFILE)
             )]
         );
@@ -333,7 +333,7 @@ mod tests {
         assert_eq!(
             state.error.as_deref(),
             Some(
-                "Building the image from /p/app/.pico/Containerfile failed. Fix the Containerfile and run pico again."
+                "Building the image from /p/app/.pide/Containerfile failed. Fix the Containerfile and run pide again."
             )
         );
     }

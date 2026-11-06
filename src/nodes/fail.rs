@@ -3,7 +3,7 @@ use crate::nodes::HasError;
 use std::convert::Infallible;
 
 /// Shown if the walk reaches [`Fail`] without an error recorded.
-pub const UNKNOWN_ERROR: &str = "pico stopped for an unknown reason.";
+pub const UNKNOWN_ERROR: &str = "pide stopped for an unknown reason.";
 
 pub trait Utils {
     /// Prints `message` to standard error.

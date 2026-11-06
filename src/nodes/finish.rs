@@ -50,7 +50,7 @@ where
             state.model()
         ));
         self.utils
-            .print("Changes made with /containerfile take effect the next time you run pico.");
+            .print("Changes made with /containerfile take effect the next time you run pide.");
         Ok(())
     }
 }
@@ -109,7 +109,7 @@ mod tests {
             *utils.printed.lock().unwrap(),
             [
                 "Pi has exited (project /p/app, model qwen3:8b).",
-                "Changes made with /containerfile take effect the next time you run pico.",
+                "Changes made with /containerfile take effect the next time you run pide.",
             ]
         );
     }

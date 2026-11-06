@@ -4,9 +4,9 @@ use crate::utils::{files, layout};
 use std::io;
 use std::path::{Path, PathBuf};
 
-/// The Containerfile pico starts every project with: just enough to run Pi.
-pub const BASE_CONTAINERFILE: &str = r#"# Development container for the Pi coding agent, created by pico.
-# Run /containerfile in Pi to add this project's toolchain, then run pico again to rebuild.
+/// The Containerfile pide starts every project with: just enough to run Pi.
+pub const BASE_CONTAINERFILE: &str = r#"# Development container for the Pi coding agent, created by pide.
+# Run /containerfile in Pi to add this project's toolchain, then run pide again to rebuild.
 FROM docker.io/library/node:24-bookworm-slim
 
 RUN apt-get update \
@@ -73,7 +73,7 @@ impl Utils for SystemUtils {
     }
 }
 
-/// Writes the base `.pico/Containerfile` and `.pico/.gitignore` if they are missing.
+/// Writes the base `.pide/Containerfile` and `.pide/.gitignore` if they are missing.
 #[derive(Clone, Debug, Default)]
 pub struct EnsureContainerfile<U = SystemUtils> {
     utils: U,
@@ -194,15 +194,15 @@ mod tests {
             *utils.written.lock().unwrap(),
             [
                 (
-                    PathBuf::from("/p/.pico/Containerfile"),
+                    PathBuf::from("/p/.pide/Containerfile"),
                     BASE_CONTAINERFILE.to_string()
                 ),
-                (PathBuf::from("/p/.pico/.gitignore"), GITIGNORE.to_string()),
+                (PathBuf::from("/p/.pide/.gitignore"), GITIGNORE.to_string()),
             ]
         );
         assert_eq!(
             *utils.printed.lock().unwrap(),
-            ["Created /p/.pico/Containerfile with the base image for Pi."]
+            ["Created /p/.pide/Containerfile with the base image for Pi."]
         );
     }
 
@@ -210,8 +210,8 @@ mod tests {
     async fn leaves_existing_files_untouched() {
         let utils = MockUtils {
             existing: vec![
-                "/p/.pico/Containerfile".into(),
-                "/p/.pico/.gitignore".into(),
+                "/p/.pide/Containerfile".into(),
+                "/p/.pide/.gitignore".into(),
             ],
             ..MockUtils::default()
         };
@@ -238,7 +238,7 @@ mod tests {
             .await;
 
         assert!(
-            matches!(result, Err(Error::Write { path, .. }) if path == Path::new("/p/.pico/Containerfile"))
+            matches!(result, Err(Error::Write { path, .. }) if path == Path::new("/p/.pide/Containerfile"))
         );
     }
 }

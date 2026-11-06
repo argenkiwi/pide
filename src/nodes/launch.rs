@@ -243,7 +243,7 @@ mod tests {
         MockState {
             target: "/p/app".into(),
             runtime: "docker".into(),
-            image: "pico-app-1234".into(),
+            image: "pide-app-1234".into(),
             ..MockState::default()
         }
     }
@@ -270,7 +270,7 @@ mod tests {
                 "--workdir",
                 "/workspace",
                 "--volume",
-                "/p/app/.pico/pi:/root/.pi/agent",
+                "/p/app/.pide/pi:/root/.pi/agent",
                 "--add-host",
                 "host.docker.internal:host-gateway",
                 "--env",
@@ -281,7 +281,7 @@ mod tests {
                 "PI_TELEMETRY=0",
                 "--env",
                 "PI_SKIP_VERSION_CHECK=1",
-                "pico-app-1234",
+                "pide-app-1234",
             ]
         );
     }
