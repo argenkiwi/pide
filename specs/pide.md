@@ -87,7 +87,7 @@ Pide (Pi Development Environment) quickly sets up a containerised development en
 
 ### Launch
 - Runs the image as an interactive container, using a terminal when one is attached, and removes the container when it exits.
-- Mounts the target folder at `/workspace` and `.pide/pi` as Pi's agent configuration folder.
+- Mounts the target folder at `/workspace` and `.pide/pi` as Pi's agent configuration folder, using the `:z` flag so shared SELinux labels permit container writes.
 - Maps `host.docker.internal` to the host so the container can reach the LLM server.
 - Passes the host's git author and committer name and email to the container.
 - Disables Pi's telemetry and update check.

@@ -129,12 +129,12 @@ impl<U: Utils> Launch<U> {
         }
         args.extend([
             "--volume".into(),
-            format!("{}:{}", target.display(), layout::WORKSPACE),
+            format!("{}:{}:z", target.display(), layout::WORKSPACE),
             "--workdir".into(),
             layout::WORKSPACE.into(),
             "--volume".into(),
             format!(
-                "{}:{}",
+                "{}:{}:z",
                 layout::pi_dir(target).display(),
                 layout::PI_AGENT_DIR
             ),
@@ -266,11 +266,11 @@ mod tests {
                 "--interactive",
                 "--tty",
                 "--volume",
-                "/p/app:/workspace",
+                "/p/app:/workspace:z",
                 "--workdir",
                 "/workspace",
                 "--volume",
-                "/p/app/.pide/pi:/root/.pi/agent",
+                "/p/app/.pide/pi:/root/.pi/agent:z",
                 "--add-host",
                 "host.docker.internal:host-gateway",
                 "--env",
