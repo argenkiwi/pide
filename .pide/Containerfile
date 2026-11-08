@@ -1,0 +1,42 @@
+# Development container for the Pi coding agent, created by pide.
+# Run /containerfile in Pi to add this project's toolchain, then run pide again to rebuild.
+FROM docker.io/library/node:24-bookworm-slim
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+     bash ca-certificates curl fd-find git ripgrep unzip \
+  && ln -s /usr/bin/fdfind /usr/local/bin/fd \
+  && rm -rf /var/lib/apt/lists/*
+
+ARG PI_VERSION=1.5.0
+RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent@${PI_VERSION}
+
+# The mounted project is owned by the host user, not root.
+RUN git config --system --add safe.directory /workspace
+
+# --- Project dependencies (managed by /containerfile) ---
+
+# ambler is a Rust project (edition 2024, rust-version = 1.85). Its dependencies
+# (ring, aws-lc-sys via reqwest/rustls) compile C from source, so we need a C
+# compiler, make, cmake and pkg-config. reqwest uses the rustls backend, so no
+# OpenSSL system library is required.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+     build-essential cmake pkg-config \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install a stable Rust toolchain (>= 1.85) plus clippy and rustfmt, which the
+# project's dev workflow uses (cargo clippy / cargo fmt --check). CARGO_HOME and
+# RUSTUP_HOME are fixed so the toolchain is available to any user at runtime.
+ENV CARGO_HOME=/usr/local/cargo \
+    RUSTUP_HOME=/usr/local/rustup \
+    PATH=/usr/local/cargo/bin:${PATH}
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
+      --profile minimal --default-toolchain stable \
+  && rustup component add clippy rustfmt \
+  && rustc --version && cargo --version
+
+# --- End of project dependencies ---
+
+WORKDIR /workspace
+ENTRYPOINT ["pi"]
