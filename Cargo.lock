@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "ambler"
 version = "0.1.0"
-source = "git+https://github.com/argenkiwi/ambler-rs?branch=main#445381791d44d8a4c8c673c745c4b8f29674f385"
+source = "git+https://github.com/argenkiwi/ambler-rs?tag=v0.1.0#445381791d44d8a4c8c673c745c4b8f29674f385"
 dependencies = [
  "rand 0.9.5",
  "thiserror",
