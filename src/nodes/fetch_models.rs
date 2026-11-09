@@ -1,6 +1,6 @@
-use crate::Node;
 use crate::nodes::{HasModels, HasServer};
 use crate::utils::llm;
+use ambler::Node;
 use std::convert::Infallible;
 use std::error::Error as _;
 use std::future::Future;

@@ -5,12 +5,9 @@ version = 4
 [[package]]
 name = "ambler"
 version = "0.1.0"
+source = "git+https://github.com/argenkiwi/ambler-rs?branch=main#445381791d44d8a4c8c673c745c4b8f29674f385"
 dependencies = [
  "rand 0.9.5",
- "reqwest",
- "serde",
- "serde_json",
- "sha2",
  "thiserror",
  "tokio",
 ]
@@ -650,6 +647,20 @@ name = "percent-encoding"
 version = "2.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b4f627cb1b25917193a259e49bdad08f671f8d9708acfd5fe0a8c1455d87220"
+
+[[package]]
+name = "pide"
+version = "0.1.0"
+dependencies = [
+ "ambler",
+ "rand 0.9.5",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+ "tokio",
+]
 
 [[package]]
 name = "pin-project-lite"

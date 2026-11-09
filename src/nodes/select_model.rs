@@ -1,6 +1,6 @@
-use crate::Node;
 use crate::nodes::{HasError, HasModel, HasModels};
 use crate::utils::terminal;
+use ambler::Node;
 use std::io;
 
 /// Where [`SelectModel`] leaves the walk.

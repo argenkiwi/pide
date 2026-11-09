@@ -1,5 +1,5 @@
-use crate::Node;
 use crate::nodes::{HasModel, HasTarget};
+use ambler::Node;
 use std::convert::Infallible;
 
 pub trait Utils {

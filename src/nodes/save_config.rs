@@ -1,6 +1,6 @@
-use crate::Node;
 use crate::nodes::{HasModel, HasServer, HasTarget};
 use crate::utils::{files, layout, pi_config, server_url};
+use ambler::Node;
 use std::io;
 use std::path::{Path, PathBuf};
 

@@ -1,11 +1,12 @@
 [package]
-name = "ambler"
+name = "pide"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85"
 license = "MIT"
 
 [dependencies]
+ambler = { git = "https://github.com/argenkiwi/ambler-rs", branch = "main" }
 rand = "0.9"
 reqwest = { version = "0.13.5", default-features = false, features = ["json", "rustls"] }
 serde = { version = "1.0.229", features = ["derive"] }

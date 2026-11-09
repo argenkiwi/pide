@@ -17,7 +17,7 @@ use crate::nodes::resolve_target::{self, ResolveTarget};
 use crate::nodes::save_config::{self, SaveConfig};
 use crate::nodes::select_model::{self, SelectModel};
 use crate::nodes::{HasError, HasImage, HasModel, HasModels, HasRuntime, HasServer, HasTarget};
-use crate::{Node, Transition, Walk};
+use ambler::{Node, Transition, Walk};
 use std::env;
 use std::path::{Path, PathBuf};
 

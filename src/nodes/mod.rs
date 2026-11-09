@@ -2,7 +2,6 @@ use std::path::{Path, PathBuf};
 
 pub mod build_image;
 pub mod check_config;
-pub mod count;
 pub mod detect_runtime;
 pub mod ensure_containerfile;
 pub mod ensure_prompt;
@@ -14,14 +13,6 @@ pub mod launch;
 pub mod resolve_target;
 pub mod save_config;
 pub mod select_model;
-pub mod start;
-pub mod stop;
-
-/// A state that has a count field.
-pub trait HasCount {
-    fn count(&self) -> i32;
-    fn count_mut(&mut self) -> &mut i32;
-}
 
 /// A state that targets a project folder.
 pub trait HasTarget {
