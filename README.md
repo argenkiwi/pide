@@ -42,7 +42,7 @@ The full behaviour is in [`specs/pide.md`](specs/pide.md).
 
 ## How it is built
 
-PiDE is a walk in the [ambler](https://github.com/argenkiwi/ambler-rs) architecture: small nodes (`src/nodes/`) wired together by `src/walks/pide.rs`, with every side effect behind a utils trait so tests can mock it.
+PiDE is a walk: a small engine (`src/engine.rs`) runs small nodes (`src/nodes/`) that are wired together by `src/walks/pide.rs`, with every side effect behind a utils trait so tests can mock it.
 
 ## Development
 

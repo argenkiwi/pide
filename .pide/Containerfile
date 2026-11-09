@@ -16,7 +16,7 @@ RUN git config --system --add safe.directory /workspace
 
 # --- Project dependencies (managed by /containerfile) ---
 
-# ambler is a Rust project (edition 2024, rust-version = 1.85). Its dependencies
+# PiDE is a Rust project (edition 2024, rust-version = 1.85). Its dependencies
 # (ring, aws-lc-sys via reqwest/rustls) compile C from source, so we need a C
 # compiler, make, cmake and pkg-config. reqwest uses the rustls backend, so no
 # OpenSSL system library is required.

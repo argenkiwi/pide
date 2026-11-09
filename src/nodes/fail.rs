@@ -1,5 +1,5 @@
+use crate::engine::Node;
 use crate::nodes::HasError;
-use ambler::Node;
 use std::convert::Infallible;
 
 /// Shown if the walk reaches [`Fail`] without an error recorded.
