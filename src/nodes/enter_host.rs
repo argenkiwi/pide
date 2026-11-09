@@ -1,6 +1,6 @@
+use crate::engine::Node;
 use crate::nodes::{HasError, HasServer};
 use crate::utils::{server_url, terminal};
-use ambler::Node;
 use std::io;
 
 /// Used when the user just presses Enter: Ollama's default address.

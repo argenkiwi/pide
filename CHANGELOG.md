@@ -4,6 +4,9 @@ All notable changes are recorded here. The format follows [Keep a Changelog](htt
 
 ## [Unreleased]
 
+### Changed
+- Removed the `ambler` git dependency; the walk engine (`Node`, `Transition`, `Walk`) now lives in `src/engine.rs`.
+
 ## [0.1.0]
 
 ### Added
