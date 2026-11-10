@@ -20,7 +20,7 @@ pub trait HasTarget {
     fn target_mut(&mut self) -> &mut PathBuf;
 }
 
-/// A state that knows which container engine (`podman` or `docker`) to drive.
+/// A state that knows which container engine (`podman`, `docker`, or Apple's `container`) to drive.
 pub trait HasRuntime {
     fn runtime(&self) -> &str;
     fn runtime_mut(&mut self) -> &mut String;

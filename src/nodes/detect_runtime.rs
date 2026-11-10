@@ -9,7 +9,7 @@ use std::future::Future;
 pub enum Outcome {
     /// An engine is installed and running; the runtime is recorded.
     Ready,
-    /// No engine is installed, or the preferred one is not running; the error is recorded.
+    /// No engine is installed, or none that is installed is running; the error is recorded.
     Unavailable,
 }
 
@@ -33,7 +33,8 @@ impl Utils for SystemUtils {
     }
 }
 
-/// Picks the container engine: podman if installed, otherwise docker, and checks it is running.
+/// Picks the container engine: the first of podman, docker and Apple's `container` that is both
+/// installed and running.
 #[derive(Clone, Debug, Default)]
 pub struct DetectRuntime<U = SystemUtils> {
     utils: U,
@@ -62,29 +63,32 @@ where
     type Error = Infallible;
 
     async fn run(&self, state: &mut S) -> Result<Outcome, Infallible> {
-        let Some(&engine) = container::ENGINES
-            .iter()
-            .find(|engine| self.utils.is_installed(engine))
-        else {
-            *state.error_mut() = Some(
-                "Neither podman nor docker is installed. Install Podman Desktop or Docker Desktop and try again."
-                    .to_string(),
-            );
-            return Ok(Outcome::Unavailable);
-        };
-        if !self.utils.is_running(engine).await {
-            let hint = if engine == "podman" {
-                "start it with `podman machine start`"
-            } else {
-                "start Docker Desktop (or the Docker daemon)"
-            };
-            *state.error_mut() = Some(format!(
-                "{engine} is installed but not running: {hint} and try again."
-            ));
-            return Ok(Outcome::Unavailable);
+        let mut preferred = None;
+        for &engine in container::ENGINES {
+            if !self.utils.is_installed(engine) {
+                continue;
+            }
+            if self.utils.is_running(engine).await {
+                *state.runtime_mut() = engine.to_string();
+                return Ok(Outcome::Ready);
+            }
+            preferred.get_or_insert(engine);
         }
-        *state.runtime_mut() = engine.to_string();
-        Ok(Outcome::Ready)
+        // Nothing is running: report on the most-preferred engine that is installed.
+        let message = match preferred {
+            None => "No container engine was found. Install Podman, Docker, or Apple's container (https://github.com/apple/container) and try again."
+                .to_string(),
+            Some(engine) => {
+                let hint = match engine {
+                    "podman" => "start it with `podman machine start`",
+                    "docker" => "start Docker Desktop (or the Docker daemon)",
+                    _ => "start it with `container system start`",
+                };
+                format!("{engine} is installed but not running: {hint} and try again.")
+            }
+        };
+        *state.error_mut() = Some(message);
+        Ok(Outcome::Unavailable)
     }
 }
 
@@ -170,14 +174,65 @@ mod tests {
 
         assert_eq!(outcome, Outcome::Unavailable);
         assert_eq!(state.runtime, "");
-        assert!(state.error.unwrap().contains("Neither podman nor docker"));
+        let message = state.error.unwrap();
+        assert!(message.contains("Podman"));
+        assert!(message.contains("Docker"));
+        assert!(message.contains("Apple's container"));
+    }
+
+    #[tokio::test]
+    async fn falls_back_to_apple_container() {
+        let (outcome, state) = run(MockUtils {
+            installed: &["container"],
+            running: &["container"],
+        })
+        .await;
+
+        assert_eq!(outcome, Outcome::Ready);
+        assert_eq!(state.runtime, "container");
+    }
+
+    #[tokio::test]
+    async fn is_unavailable_with_a_hint_if_container_is_not_running() {
+        let (outcome, state) = run(MockUtils {
+            installed: &["container"],
+            running: &[],
+        })
+        .await;
+
+        assert_eq!(outcome, Outcome::Unavailable);
+        assert!(state.error.unwrap().contains("container system start"));
+    }
+
+    #[tokio::test]
+    async fn skips_an_installed_engine_that_is_not_running() {
+        let (outcome, state) = run(MockUtils {
+            installed: &["podman", "docker", "container"],
+            running: &["container"],
+        })
+        .await;
+
+        assert_eq!(outcome, Outcome::Ready);
+        assert_eq!(state.runtime, "container");
+    }
+
+    #[tokio::test]
+    async fn falls_back_to_docker_if_podman_is_not_running() {
+        let (outcome, state) = run(MockUtils {
+            installed: &["podman", "docker"],
+            running: &["docker"],
+        })
+        .await;
+
+        assert_eq!(outcome, Outcome::Ready);
+        assert_eq!(state.runtime, "docker");
     }
 
     #[tokio::test]
     async fn is_unavailable_with_a_hint_if_podman_is_not_running() {
         let (outcome, state) = run(MockUtils {
             installed: &["podman", "docker"],
-            running: &["docker"],
+            running: &[],
         })
         .await;
 

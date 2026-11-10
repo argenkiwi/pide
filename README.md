@@ -6,9 +6,16 @@ PiDE targets a project folder (the current folder unless you give another), chec
 
 ## Requirements
 
-- [Podman](https://podman.io) (preferred) or Docker, installed and running
+- A container engine: [Podman](https://podman.io) (preferred), [Docker](https://www.docker.com), or [Apple's `container`](https://github.com/apple/container) (macOS with Apple silicon), installed and running
 - A local LLM server reachable from the host, e.g. [Ollama](https://ollama.com) or [LM Studio](https://lmstudio.ai)
 - Rust 1.85 or later, to build from source
+
+> [!NOTE]
+> `podman` and Docker map the host machine into each container automatically, so a local LLM
+> server is reachable at `host.docker.internal` out of the box. Apple's `container` has no such
+> flag: on macOS you must first make that name resolve, for example with
+> `sudo container system dns create host.docker.internal --localhost 203.0.113.113` (see Apple's
+> [host integration docs](https://github.com/apple/container/blob/main/docs/host-integration.md)).
 
 ## Install
 

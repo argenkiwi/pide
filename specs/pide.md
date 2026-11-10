@@ -19,10 +19,10 @@ Pide (Pi Development Environment) quickly sets up a containerised development en
 - If the folder does not exist, it records an error and transitions to `FAIL`.
 
 ### Detect Runtime
-- Picks the container engine: `podman` if it is installed, otherwise `docker`.
-- Checks that the chosen engine is running and responding.
-- If neither engine is installed, it records an error with installation guidance and transitions to `FAIL`.
-- If the engine is installed but not running, it records an error with a hint on starting it (`podman machine start` or starting Docker Desktop) and transitions to `FAIL`.
+- Picks the container engine: the first of `podman`, `docker` and Apple's `container` that is both installed and running. An installed engine that is not running is skipped in favour of the next one.
+- Checks that an engine is running and responding. For `podman` and `docker` this is the `info` command; for `container` it is `system status`.
+- If no engine is installed, it records an error with installation guidance and transitions to `FAIL`.
+- If engines are installed but none is running, it records an error for the most-preferred installed one, with a hint on starting it (`podman machine start`, starting Docker Desktop, or `container system start`), and transitions to `FAIL`.
 - If the engine is ready, it transitions to `ENSURE_CONTAINERFILE`.
 
 ### Ensure Containerfile
@@ -79,16 +79,16 @@ Pide (Pi Development Environment) quickly sets up a containerised development en
 
 ### Build Image
 - Derives the image name from the target folder's name plus a short hash of its absolute path, so different projects with the same folder name don't share an image.
-- Computes a hash of the Containerfile's contents and compares it with the one labelled on the existing image, if any.
+- Computes a hash of the Containerfile's contents and compares it with the one labelled on the existing image, if any. `podman` and `docker` read the label with `image inspect --format`; Apple's `container` prints `image inspect` as JSON, which pide parses instead.
 - If the hashes match, it skips the build and transitions to `LAUNCH`.
-- Otherwise, it builds the image (showing the build output) and labels it with the new hash.
+- Otherwise, it builds the image (showing the build output) and labels it with the new hash. The `build` flags (`-t`, `-f`, `--label`, and the positional context) are the same across all three engines.
 - If the build succeeds, it transitions to `LAUNCH`.
 - If the build fails, it records the error and transitions to `FAIL`.
 
 ### Launch
 - Runs the image as an interactive container, using a terminal when one is attached, and removes the container when it exits.
-- Mounts the target folder at `/workspace` and `.pide/pi` as Pi's agent configuration folder, using the `:z` flag so shared SELinux labels permit container writes.
-- Maps `host.docker.internal` to the host so the container can reach the LLM server.
+- Mounts the target folder at `/workspace` and `.pide/pi` as Pi's agent configuration folder, using the `:z` flag so shared SELinux labels permit container writes. Apple's `container` rejects `:z` (the mount fails to start), so it gets plain mounts.
+- Maps `host.docker.internal` to the host so the container can reach the LLM server. `podman` and `docker` do this with `--add-host host.docker.internal:host-gateway`; Apple's `container` has no such flag, so the mapping is left to the user (a `container` container must reach `host.docker.internal` some other way).
 - Passes the host's git author and committer name and email to the container.
 - Disables Pi's telemetry and update check.
 - Waits for Pi to exit.
@@ -109,7 +109,7 @@ Pide (Pi Development Environment) quickly sets up a containerised development en
 
 The shared state consists of:
 - `target`: The absolute path of the project folder.
-- `runtime`: The container engine in use (podman or docker).
+- `runtime`: The container engine in use (`podman`, `docker`, or Apple's `container`).
 - `host_url`: The LLM server URL as the user entered it.
 - `container_url`: The same URL as seen from inside the container.
 - `models`: The model identifiers reported by the server.

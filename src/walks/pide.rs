@@ -711,7 +711,7 @@ mod tests {
         let state = walk(&script).await;
 
         assert!(state.error.is_some());
-        assert!(last_printed(&script).contains("Neither podman nor docker"));
+        assert!(last_printed(&script).contains("Apple's container"));
     }
 
     #[tokio::test]
