@@ -121,26 +121,33 @@ where
 
 impl<U: Utils> Launch<U> {
     /// The engine's `run` arguments.
-    fn args<S: HasTarget + HasImage>(&self, state: &S) -> Vec<String> {
+    fn args<S: HasTarget + HasRuntime + HasImage>(&self, state: &S) -> Vec<String> {
         let target = state.target();
         let mut args: Vec<String> = vec!["run".into(), "--rm".into(), "--interactive".into()];
         if self.utils.is_terminal() {
             args.push("--tty".into());
         }
+        // `:z` relabels for SELinux on podman/docker; Apple's `container` rejects it.
+        let options = container::volume_options(state.runtime());
         args.extend([
             "--volume".into(),
-            format!("{}:{}:z", target.display(), layout::WORKSPACE),
+            format!("{}:{}{options}", target.display(), layout::WORKSPACE),
             "--workdir".into(),
             layout::WORKSPACE.into(),
             "--volume".into(),
             format!(
-                "{}:{}:z",
+                "{}:{}{options}",
                 layout::pi_dir(target).display(),
                 layout::PI_AGENT_DIR
             ),
-            "--add-host".into(),
-            format!("{}:host-gateway", server_url::CONTAINER_HOST),
         ]);
+        // Podman and docker map the host into the container with `--add-host host.docker.internal:
+        // host-gateway`; Apple's `container` has no such flag, so `host_args` leaves that to the
+        // user there. The container URL is already `host.docker.internal` for a local server.
+        args.extend(container::host_args(
+            state.runtime(),
+            server_url::CONTAINER_HOST,
+        ));
         for (var, key) in GIT_IDENTITY {
             if let Some(value) = self.utils.git_config(key) {
                 args.extend(["--env".into(), format!("{var}={value}")]);
@@ -298,6 +305,37 @@ mod tests {
 
         let (_, args) = utils.ran.lock().unwrap().clone().unwrap();
         assert!(!args.iter().any(|a| a == "--tty" || a.starts_with("GIT_")));
+    }
+
+    #[tokio::test]
+    async fn omits_add_host_for_apple_container() {
+        let utils = MockUtils::new(Ok(Some(0)));
+        let mut state = state();
+        state.runtime = "container".into();
+
+        let Ok(_) = Launch::with_utils(&utils).run(&mut state).await;
+
+        let (engine, args) = utils.ran.lock().unwrap().clone().unwrap();
+        assert_eq!(engine, "container");
+        assert!(!args.iter().any(|a| a == "--add-host"));
+    }
+
+    #[tokio::test]
+    async fn omits_selinux_label_on_volumes_for_apple_container() {
+        let utils = MockUtils::new(Ok(Some(0)));
+        let mut state = state();
+        state.runtime = "container".into();
+
+        let Ok(_) = Launch::with_utils(&utils).run(&mut state).await;
+
+        let (_, args) = utils.ran.lock().unwrap().clone().unwrap();
+        let volumes: Vec<_> = args
+            .windows(2)
+            .filter(|w| w[0] == "--volume")
+            .map(|w| w[1].clone())
+            .collect();
+        assert_eq!(volumes.len(), 2);
+        assert!(volumes.iter().all(|v| !v.ends_with(":z")));
     }
 
     #[tokio::test]
