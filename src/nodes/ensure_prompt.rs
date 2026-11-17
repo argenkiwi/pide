@@ -17,6 +17,8 @@ Update `.pide/Containerfile` so this container has everything needed to build, t
 5. Briefly explain what you added and why.
 
 You can't rebuild the image from inside the container. When you're done, tell the user to exit Pi and run pide again: it rebuilds the image because the Containerfile changed.
+
+$@
 "#;
 
 /// Where [`EnsurePrompt`] leaves the walk.
