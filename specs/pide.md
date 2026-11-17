@@ -74,6 +74,7 @@ Pide (Pi Development Environment) quickly sets up a containerised development en
   - add the toolchains, system packages and tools the project needs to `.pide/Containerfile`, keeping the base layers that Pi depends on;
   - match versions the project already declares;
   - tell the user to exit and run pide again so the image is rebuilt.
+- Appends `$@` to the prompt so arguments passed to `/containerfile` are forwarded as additional instructions.
 - Leaves an existing prompt untouched, so the user can customise it.
 - Transitions to `BUILD_IMAGE`.
 
