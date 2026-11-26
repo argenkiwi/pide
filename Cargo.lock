@@ -3,6 +3,17 @@
 version = 4
 
 [[package]]
+name = "ambler"
+version = "0.1.1"
+source = "git+https://github.com/argenkiwi/ambler-rs#b573e4756c7a02f4ed39a2bc973ee8a10183ea95"
+dependencies = [
+ "proc-macro2",
+ "syn 2.0.117",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
 name = "atomic-waker"
 version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1521,6 +1532,14 @@ name = "writeable"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
+
+[[package]]
+name = "xtask"
+version = "0.1.0"
+dependencies = [
+ "ambler",
+ "tokio",
+]
 
 [[package]]
 name = "yoke"

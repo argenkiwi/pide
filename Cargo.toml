@@ -5,6 +5,9 @@ edition = "2024"
 rust-version = "1.85"
 license = "MIT"
 
+[workspace]
+members = [".", "xtask"]
+
 [dependencies]
 reqwest = { version = "0.13.5", default-features = false, features = ["json", "rustls"] }
 serde = { version = "1.0.229", features = ["derive"] }
