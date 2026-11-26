@@ -71,7 +71,7 @@ Pide (Pi Development Environment) quickly sets up a containerised development en
 - Checks for `.pide/pi/prompts/containerfile.md`.
 - If it is missing, it writes the prompt behind the `/containerfile` slash command. The prompt instructs Pi to:
   - inspect the project's manifests, lockfiles and toolchain files (for example `Cargo.toml`, `package.json`, `pyproject.toml`, `go.mod`, `.tool-versions`);
-  - add the toolchains, system packages and tools the project needs to `.pide/Containerfile`, keeping the base layers that Pi depends on;
+  - add the toolchains, system packages and tools the project needs to `.pide/Containerfile`, keeping the base layers that Pi depends on, including what it takes to run the tools the project declares as dev dependencies or project scripts (such as an Ambler project's own CLI);
   - match versions the project already declares;
   - tell the user to exit and run pide again so the image is rebuilt.
 - Appends `$@` to the prompt so arguments passed to `/containerfile` are forwarded as additional instructions.

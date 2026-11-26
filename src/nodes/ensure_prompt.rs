@@ -11,7 +11,7 @@ description: Add this project's toolchain and dependencies to .pide/Containerfil
 Update `.pide/Containerfile` so this container has everything needed to build, test and run this project.
 
 1. Work out what the project needs. Look at its manifests and lockfiles (for example `Cargo.toml`, `package.json`, `pyproject.toml`, `requirements.txt`, `go.mod`, `Gemfile`, `pom.xml`, `build.gradle`), its toolchain files (`rust-toolchain.toml`, `.nvmrc`, `.python-version`, `.tool-versions`), and its build scripts, Makefiles and CI configuration.
-2. Edit `.pide/Containerfile` to install the toolchains, system packages and command-line tools the project needs. Where the project declares a version, use that version.
+2. Edit `.pide/Containerfile` to install the toolchains, system packages and command-line tools the project needs. Where the project declares a version, use that version. Include what it takes to run the tools the project declares as dev dependencies or project scripts (an `xtask` behind a Cargo alias, a `package.json` bin, a uv dev group), such as an Ambler project's `cargo ambler`, `bun run ambler` or `uv run ambler`: its `AGENTS.md` tells you to use them.
 3. Put your changes between the `Project dependencies` markers. Keep the base layers that Pi depends on: the Node runtime, the Pi coding agent, the git `safe.directory` setting, `WORKDIR /workspace` and `ENTRYPOINT ["pi"]`.
 4. Don't `COPY` project files into the image. The project is mounted at `/workspace` when the container runs, and the build context contains only `.pide/`.
 5. Briefly explain what you added and why.
