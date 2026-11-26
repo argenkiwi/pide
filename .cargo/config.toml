@@ -1,0 +1,2 @@
+[alias]
+ambler = "run -q -p xtask --"
